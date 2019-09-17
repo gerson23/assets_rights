@@ -9,8 +9,39 @@
 import SwiftUI
 
 struct ContentView : View {
+    @EnvironmentObject var userData: UserData
+    
+    @State private var selection = 0
+    
     var body: some View {
-        Text("Hello World")
+        TabView(selection: $selection) {
+            Home()
+            .tag(0)
+            .tabItem {
+                VStack {
+                    Image(systemName: "house.fill")
+                    Text("Principal")
+                }
+            }
+            
+            Overview()
+            .tag(1)
+            .tabItem {
+                VStack {
+                    Image(systemName: "doc.plaintext")
+                    Text("Resumo")
+                }
+            }
+            
+            Settings()
+            .tag(2)
+            .tabItem {
+                VStack {
+                    Image(systemName: "wrench.fill")
+                    Text("Ajustes")
+                }
+            }
+        }
     }
 }
 
