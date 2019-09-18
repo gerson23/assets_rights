@@ -46,17 +46,43 @@ class StockStore : ObservableObject, Identifiable {
         
         self.stocks.append(newStock)
         
-        do {
-            let data = try PropertyListEncoder().encode(self.stocks)
-            UserDefaults.standard.set(data, forKey: "stocks")
-        } catch {
-            print("Could not encode stocks")
-        }
+        self.updateToDefaults()
+    }
+    
+    /// Removes a given stock at an index and persists to database
+    ///
+    /// - Parameters:
+    ///   - index: Index of the stock to be removed from the application.
+    ///   Does nothing if negative.
+    func removeStock(at index: Int) {
+        if(index < 0) { return }
+        
+        self.stocks.remove(at: index)
+        self.updateToDefaults()
+    }
+    
+    /// Wrapper to remove a given Stock object
+    /// - Parameters:
+    ///   - stock: Stock object to be removed
+    func removeStock(stock: Stock) {
+        print("passou")
+        let index = self.stocks.firstIndex(of: stock) ?? -1
+        self.removeStock(at: index)
     }
     
     /// Clears all information of the current user, removing data from UserDefault and from memory as well.
     func clearAll() {
         UserDefaults.standard.removeObject(forKey: "stocks")
         self.stocks = []
+    }
+    
+    /// Private function to update the current state to the DB (UserDefaults currently)
+    private func updateToDefaults() {
+        do {
+            let data = try PropertyListEncoder().encode(self.stocks)
+            UserDefaults.standard.set(data, forKey: "stocks")
+        } catch {
+            print("Could not encode stocks")
+        }
     }
 }

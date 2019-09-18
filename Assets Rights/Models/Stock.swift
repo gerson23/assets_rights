@@ -13,12 +13,14 @@ struct Stock: Hashable, Codable, Identifiable {
     var ticker: String
     var company: String
     var movement: [Action]
+    var type: TypeStock
     
     init(id: UUID? = nil, ticker: String? = nil, movement: [Action]? = nil) {
         self.id = UUID()
         self.ticker = ""
         self.movement = []
         self.company = ""
+        self.type = TypeStock.stock
     }
 }
 
@@ -43,4 +45,9 @@ struct Action: Hashable, Codable {
 enum TypeAction: String, CaseIterable, Hashable, Codable {
     case buy = "Compra"
     case sell = "Venda"
+}
+
+enum TypeStock: String, CaseIterable, Hashable, Codable {
+    case fii = "Código 73 (FIIs)"
+    case stock = "Código 31 (Ações)"
 }

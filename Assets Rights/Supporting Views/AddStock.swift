@@ -62,7 +62,14 @@ struct AddStock : View {
         
         if let companyData = stockData[company] {
             for stock in companyData.stocks {
-                if stock.ticker == ticker { return true }
+                if stock.ticker == ticker {
+                    if(stock.bdi == "002") {
+                        self.stock.type = TypeStock.stock
+                    } else if (stock.bdi == "012") {
+                        self.stock.type = TypeStock.fii
+                    }
+                    return true
+                }
             }
         }
         

@@ -10,20 +10,35 @@ import SwiftUI
 import Foundation
 
 struct OverviewDetail: View {
+    @EnvironmentObject var stockStore: StockStore
+    @Environment(\.presentationMode) var presentationMode
+    
     var stock: Stock
     var company: Company
     var totals: Action
+    var stockPaper: Paper
+    
+    @State var showRemoveAlert = false
+    @State var showRemovedAlert = false
     
     
     init(_ stock: Stock, _ company: Company) {
         self.stock = stock
         self.company = company
         self.totals = Action()
+        self.stockPaper = Paper(bdi: "", desc_bdi: "", spec: "", ticker: "")
         
         // TODO: complete total calculation
         for action in self.stock.movement {
             self.totals.quantity += action.quantity
-            self.totals.avgPrice += action.avgPrice
+            self.totals.avgPrice += action.avgPrice * Double(action.quantity)
+        }
+        
+        for paper in company.stocks {
+            if(paper.ticker == stock.ticker) {
+                self.stockPaper = paper
+                break
+            }
         }
     }
     
@@ -35,12 +50,30 @@ struct OverviewDetail: View {
                 .padding(.leading)
             Form {
                 Section(header: Text("Dados do papel")) {
-                    FormLine(title: "Razão Social", content: self.company.social_name)
-                    FormLine(title: "CNPJ", content: "00.000.000/0001-00")
+                    //FormLine(title: "Razão Social", content: self.company.social_name)
+                    //FormLine(title: "CNPJ", content: "00.000.000/0001-00")
+                    FormLine(title: "Especificação", content: company.short_name + " " + stockPaper.spec)
                 }
                 Section(header: Text("Valores")) {
                     FormLine(title: "Quantidade", content: String(totals.quantity))
-                    FormLine(title: "Preço Médio", content: String(totals.avgPrice))
+                    FormLine(title: "Total Investido", content: String(format: "R$ %.2f", totals.avgPrice))
+                    FormLine(title: "Preço Médio", content: String(format: "R$ %.2f", totals.avgPrice/Double(totals.quantity)))
+                }
+                Section {
+                    Button(action: { }) {
+                        Text("Editar")
+                    }
+                    Button(action: { self.showRemoveAlert = true }) {
+                        Text("Remover título")
+                            .foregroundColor(.red)
+                    }
+                    .alert(isPresented: $showRemoveAlert) {
+                        Alert(title: Text("Certeza que deseja remover?"), message: Text("Essa ação não poderá ser desfeita"), primaryButton: .destructive(Text("Remover")) {
+                            self.stockStore.removeStock(stock: self.stock)
+                            self.presentationMode.wrappedValue.dismiss()
+                            }, secondaryButton: .cancel())
+                    }
+                    
                 }
             }
         }
