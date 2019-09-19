@@ -60,8 +60,9 @@ struct OverviewDetail: View {
                     FormLine(title: "Preço Médio", content: String(format: "R$ %.2f", totals.avgPrice/Double(totals.quantity)))
                 }
                 Section {
-                    Button(action: { }) {
-                        Text("Editar")
+                    NavigationLink(destination: OverviewEdit(stock: self.stock, company: self.company)) {
+                        Text("Extrato")
+                            .foregroundColor(.blue)
                     }
                     Button(action: { self.showRemoveAlert = true }) {
                         Text("Remover título")

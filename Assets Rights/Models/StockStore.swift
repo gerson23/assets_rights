@@ -40,6 +40,7 @@ class StockStore : ObservableObject, Identifiable {
             if stock.ticker == newStock.ticker {
                 let idx = self.stocks.firstIndex(of: stock)!
                 self.stocks[idx].movement.append(newStock.movement[0])
+                self.updateToDefaults()
                 return
             }
         }

@@ -24,7 +24,8 @@ struct Stock: Hashable, Codable, Identifiable {
     }
 }
 
-struct Action: Hashable, Codable {
+struct Action: Hashable, Codable, Identifiable {
+    var id: UUID
     var actionDate: Date
     var avgPrice: Double
     var taxes: Double
@@ -34,6 +35,7 @@ struct Action: Hashable, Codable {
     static let `default` = Self(actionDate: Date(), avgPrice: 0.0, taxes: 0.0, quantity: 0, type: TypeAction.buy)
     
     init(actionDate: Date? = nil, avgPrice: Double? = nil, taxes: Double? = nil, quantity: Int? = nil, type: TypeAction? = nil) {
+        self.id = UUID()
         self.actionDate = actionDate ?? Date()
         self.avgPrice = avgPrice ?? 0.00
         self.taxes = taxes ?? 0.00
