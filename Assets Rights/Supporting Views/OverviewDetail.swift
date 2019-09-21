@@ -30,8 +30,13 @@ struct OverviewDetail: View {
         
         // TODO: complete total calculation
         for action in self.stock.movement {
-            self.totals.quantity += action.quantity
-            self.totals.avgPrice += action.avgPrice * Double(action.quantity)
+            if(action.type == TypeAction.buy) {
+                self.totals.avgPrice = (self.totals.avgPrice*Double(self.totals.quantity) + action.avgPrice*Double(action.quantity) + action.taxes)/Double(self.totals.quantity + action.quantity)
+                self.totals.quantity += action.quantity
+            }
+            else {
+                self.totals.quantity -= action.quantity
+            }
         }
         
         for paper in company.stocks {
@@ -56,8 +61,8 @@ struct OverviewDetail: View {
                 }
                 Section(header: Text("Valores")) {
                     FormLine(title: "Quantidade", content: String(totals.quantity))
-                    FormLine(title: "Total Investido", content: String(format: "R$ %.2f", totals.avgPrice))
-                    FormLine(title: "Preço Médio", content: String(format: "R$ %.2f", totals.avgPrice/Double(totals.quantity)))
+                    FormLine(title: "Total Investido", content: currencyDouble2String(curDouble: totals.avgPrice * Double(totals.quantity)))
+                    FormLine(title: "Preço Médio", content: currencyDouble2String(curDouble: totals.avgPrice, isAverage: true))
                 }
                 Section {
                     NavigationLink(destination: OverviewEdit(stock: self.stock, company: self.company)) {

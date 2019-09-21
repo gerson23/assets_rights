@@ -76,6 +76,16 @@ struct AddStock : View {
         return false
     }
     
+    func currencyString2Double(_ stringVal: String) -> Double? {
+        let converted: Double = Double(truncating: currencyFormat.number(from: stringVal) ??
+            currencyFormat.number(from: currencyFormat.currencySymbol + stringVal) ??
+            NS_INVALID_NUMBER)
+        if(converted == INVALID_NUMBER) {
+            return nil
+        }
+        return converted
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(alignment: .center) {
@@ -92,9 +102,9 @@ struct AddStock : View {
                         self.stock.company = String(self.stock.ticker[range])
                     }
                     var movement: Action
-                    if let avgPriceDouble = Double(self.fields.avgPrice) {
+                    if let avgPriceDouble = self.currencyString2Double(self.fields.avgPrice) {
                         if let quantityInt = Int(self.fields.quantity) {
-                            if let taxesDouble = Double(self.fields.taxes) {
+                            if let taxesDouble = self.currencyString2Double(self.fields.taxes) {
                                 movement = Action(avgPrice: avgPriceDouble, taxes: taxesDouble, quantity: quantityInt, type: self.action.type)
                             }
                             else {
@@ -181,7 +191,10 @@ struct FieldLine: View {
             Text(title)
             if(keyboard == .decimalPad) {
                 TextField(placeholder, text: $field, onEditingChanged: {changed in
-                    if(!changed) { self.field = String(format: "%.2f", Double(self.field) ?? 0.0) }
+                    if(!changed) {
+                        let doubleValue = currencyFormat.number(from: currencyFormat.currencySymbol + self.field) ?? 0
+                        self.field = currencyFormat.string(from: doubleValue) ?? ""
+                    }
                     else { self.field = "" }
                 })
                     .keyboardType(keyboard)
