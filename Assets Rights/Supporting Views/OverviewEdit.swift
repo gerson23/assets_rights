@@ -9,23 +9,40 @@
 import SwiftUI
 import Foundation
 
+class StateHolder: ObservableObject {
+    @Published var showDetails: [UUID:Bool] = [:]
+    
+    init(actions: [Action]) {
+        for action in actions {
+            self.showDetails[action.id] = false
+        }
+    }
+}
+
 struct OverviewEdit: View {
     var stock: Stock
     var company: Company
     
-    @State var showDetails = false
+    @ObservedObject var state: StateHolder
+    
+    init(stock: Stock, company: Company) {
+        self.stock = stock
+        self.company = company
+        
+        self.state = StateHolder(actions: self.stock.movement)
+    }
     
     var body: some View {
         VStack {
             Text(company.social_name)
                 .fontWeight(.light)
                 .foregroundColor(.gray)
-            ForEach(stock.movement) { action in
+            ForEach(stock.movement) { move in
                 VStack {
-                    Button(action: { self.showDetails = !self.showDetails }) {
-                        EditRow(action: action)
+                    Button(action: { self.state.showDetails[move.id] = !self.state.showDetails[move.id]! }) {
+                        EditRow(action: move)
                     }
-                    if(self.showDetails) { EditDetails(action: action) }
+                    if(self.state.showDetails[move.id]!) { EditDetails(action: move) }
                 }
                 .padding()
                 Divider()
@@ -42,6 +59,7 @@ struct EditRow: View {
     var valueFormat: String
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
+        formatter.locale = Locale.current
         formatter.dateStyle = .medium
         return formatter
     }()
@@ -81,17 +99,30 @@ struct EditDetails: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Text("Quantidade")
-                    .bold()
-                Spacer()
-                Text("\(action.quantity)")
-            }
+            EditDetailsRow(label: "Quantidade", currency: false, valueDouble: 0.0, valueInt: action.quantity)
+            EditDetailsRow(label: "Preço Médio", currency: true, valueDouble: action.avgPrice, valueInt: 0)
+            EditDetailsRow(label: "Taxas", currency: true, valueDouble: action.taxes, valueInt: 0)
             Button(action: { print("ok") }) {
                 Image(systemName: "xmark.circle")
                 Text("Remover")
             }
             .foregroundColor(.red)
+        }
+    }
+}
+
+struct EditDetailsRow: View {
+    var label: String
+    var currency: Bool
+    var valueDouble: Double
+    var valueInt: Int
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .bold()
+            Spacer()
+            Text(currency ? currencyDouble2String(curDouble: valueDouble) : String(valueInt))
         }
     }
 }
