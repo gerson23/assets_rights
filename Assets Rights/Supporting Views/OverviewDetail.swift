@@ -18,9 +18,7 @@ struct OverviewDetail: View {
     var totals: Action
     var stockPaper: Paper
     
-    @State var showRemoveAlert = false
-    @State var showRemovedAlert = false
-    
+    @State var showRemoveAlert = false    
     
     init(_ stock: Stock, _ company: Company) {
         self.stock = stock

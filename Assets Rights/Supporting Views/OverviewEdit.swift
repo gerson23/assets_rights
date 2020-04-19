@@ -42,7 +42,7 @@ struct OverviewEdit: View {
                     Button(action: { self.state.showDetails[move.id] = !self.state.showDetails[move.id]! }) {
                         EditRow(action: move)
                     }
-                    if(self.state.showDetails[move.id]!) { EditDetails(action: move) }
+                    if(self.state.showDetails[move.id]!) { EditDetails(action: move, stock: self.stock) }
                 }
                 .padding()
                 Divider()
@@ -56,18 +56,12 @@ struct OverviewEdit: View {
 
 struct EditRow: View {
     var action: Action
-    var valueFormat: String
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale.current
         formatter.dateStyle = .medium
         return formatter
     }()
-    
-    init(action: Action) {
-        self.action = action
-        self.valueFormat = (action.type == TypeAction.buy ? "+ R$ %.2f" : "- R$ %.2f")
-    }
 
     var body: some View {
         HStack {
@@ -87,7 +81,7 @@ struct EditRow: View {
             }
                 .foregroundColor(.primary)
             Spacer()
-            Text(currencyDouble2String(curDouble: action.avgPrice*Double(action.quantity)))
+            Text(currencyDouble2String(curDouble: action.avgPrice*Double(action.quantity) + (action.type == TypeAction.buy ? action.taxes : -action.taxes)))
                 .bold()
                 .foregroundColor(action.type == TypeAction.buy ? .green : .red)
          }
@@ -95,18 +89,28 @@ struct EditRow: View {
 }
 
 struct EditDetails: View {
+    @EnvironmentObject var stockStock: StockStore
+    
     var action: Action
+    var stock: Stock
+    
+    @State var showRemoveAlert = false
     
     var body: some View {
         VStack {
             EditDetailsRow(label: "Quantidade", currency: false, valueDouble: 0.0, valueInt: action.quantity)
             EditDetailsRow(label: "Preço Médio", currency: true, valueDouble: action.avgPrice, valueInt: 0)
             EditDetailsRow(label: "Taxas", currency: true, valueDouble: action.taxes, valueInt: 0)
-            Button(action: { print("ok") }) {
+            Button(action: { self.showRemoveAlert = true }) {
                 Image(systemName: "xmark.circle")
                 Text("Remover")
             }
             .foregroundColor(.red)
+            .alert(isPresented: $showRemoveAlert) {
+                Alert(title: Text("Confirmar remocão?"), primaryButton: .destructive(Text("Remover")) {
+                    self.stockStock.removeAction(action: self.action, from: self.stock)
+                    }, secondaryButton: .cancel())
+            }
         }
     }
 }

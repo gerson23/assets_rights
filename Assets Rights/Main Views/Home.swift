@@ -41,6 +41,8 @@ struct Home : View {
         NavigationView {
             VStack(alignment: .leading) {
                 
+                StockGraph(self.stockStore.stocks)
+                
                 Button(action: { self.showAction = true }) {
                     HStack {
                         Image(systemName: "plus.circle.fill")

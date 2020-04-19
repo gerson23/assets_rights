@@ -66,9 +66,19 @@ class StockStore : ObservableObject, Identifiable {
     /// - Parameters:
     ///   - stock: Stock object to be removed
     func removeStock(stock: Stock) {
-        print("passou")
         let index = self.stocks.firstIndex(of: stock) ?? -1
         self.removeStock(at: index)
+    }
+    
+    func removeAction(action: Action, from stock: Stock) {
+        if let idxStock = self.stocks.firstIndex(of: stock) {
+            if let idxAction = self.stocks[idxStock].movement.firstIndex(of: action) {
+                print(idxAction)
+                print(idxStock)
+                self.stocks[idxStock].movement.remove(at: idxAction)
+                self.updateToDefaults()
+            }
+        }
     }
     
     /// Clears all information of the current user, removing data from UserDefault and from memory as well.
