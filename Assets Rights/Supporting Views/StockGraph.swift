@@ -9,6 +9,9 @@
 import SwiftUI
 
 let MAX_CAPSULE_WIDTH: Double = 50
+let STOCK_LABELS: [TypeStock:String] = [
+    TypeStock.fii: "FII",
+    TypeStock.stock: "Ação"]
 
 struct StockGraph: View {
     var stockData: [TypeStock: Double] = [:]
@@ -31,6 +34,11 @@ struct StockGraph: View {
                 self.maxData += self.stockData[type]!
             }
         }
+        
+        // avoid division by 0
+        if(self.maxData == 0) {
+            self.maxData = 1
+        }
     }
     
     var body: some View {
@@ -41,7 +49,7 @@ struct StockGraph: View {
                         Text(currencyDouble2String(curDouble: self.stockData[type] ?? 0.0))
                             .font(.callout)
                         StockGraphCapsule(value: self.stockData[type] ?? 0.0, maxValue: self.maxData, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
-                        Text(type.rawValue)
+                        Text(STOCK_LABELS[type]!)
                     }
                 }
             }
@@ -74,6 +82,7 @@ struct StockGraphCapsule: View {
             Capsule()
                 .frame(width: CGFloat(width), height: CGFloat(value) / CGFloat(maxValue) * 400)
                 .animation(.easeIn(duration: 0.5))
+                .foregroundColor(.blue)
         }
     }
 }
