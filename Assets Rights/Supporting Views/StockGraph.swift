@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-let MAX_CAPSULE_WIDTH: Double = 50
+let MAX_CAPSULE_WIDTH: Double = 40
 let STOCK_LABELS: [TypeStock:String] = [
     TypeStock.fii: "FII",
     TypeStock.stock: "Ação"]
@@ -38,10 +38,8 @@ struct StockGraph: View {
             
             for stock in stocks {
                 if(stock.type == type) {
-                    for move in stock.movement {
-//                        if(move.type == TypeAction.buy)
-                        self.stockData[GraphType.by_type]![typeName]! += move.avgPrice * Double(move.quantity)
-                    }
+                    let stockAmount = calcTotalbyStock(movements: stock.movement)
+                    self.stockData[GraphType.by_type]![typeName]! += stockAmount.0
                 }
             }
             if(self.stockData[GraphType.by_type]![typeName]! > self.maxData[GraphType.by_type]!) {
@@ -55,10 +53,10 @@ struct StockGraph: View {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY"
         for stock in stocks {
-            for move in stock.movement {
-                let yearMove = dateFormatter.string(from: move.actionDate)
-                let amount = yearsTotal[yearMove] ?? 0.0
-                yearsTotal[yearMove] = amount + (move.avgPrice * Double(move.quantity))
+            let stockAmount = calcTotalbyStock(movements: stock.movement)
+            
+            for (year, total) in stockAmount.2 {
+                yearsTotal[year] = (yearsTotal[year] ?? 0.0) + total
             }
         }
         
@@ -68,11 +66,8 @@ struct StockGraph: View {
                 self.maxData[GraphType.by_year] = total
             }
         }
-        
-        self.labels[GraphType.by_year] = Array(self.stockData[GraphType.by_year]!.keys)
-        self.labels[GraphType.by_type] = Array(self.stockData[GraphType.by_type]!.keys)
-        
-        // avoid division by 0
+                
+        // General data wrapup
         GraphType.allCases.forEach {
             let type = $0
             
@@ -80,23 +75,26 @@ struct StockGraph: View {
                 self.maxData[type] = 1
             }
             
-            self.labels[type] = Array(self.stockData[type]!.keys)
+            self.labels[type] = Array(self.stockData[type]!.keys).sorted()
         }
     }
     
     var body: some View {
         GeometryReader { geometry in
-            HStack {
-                ForEach(self.labels[self.selectedType]!, id: \.self) { key in
-                    VStack {
-                        Text(currencyDouble2String(curDouble: self.stockData[self.selectedType]![key] ?? 0.0))
-                            .font(.callout)
-                        StockGraphCapsule(value: self.stockData[self.selectedType]![key] ?? 0.0, maxValue: self.maxData[self.selectedType]!, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
-                            .animation(.default)
-                        Text(key)
+            ScrollView(.horizontal){
+                HStack {
+                    Spacer()
+                    ForEach(self.labels[self.selectedType]!, id: \.self) { key in
+                        VStack {
+                            Text(currencyDouble2String(curDouble: self.stockData[self.selectedType]![key] ?? 0.0))
+                                .font(.callout)
+                            StockGraphCapsule(value: self.stockData[self.selectedType]![key] ?? 0.0, maxValue: self.maxData[self.selectedType]!, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
+                            Text(key)
+                        }
                     }
                 }
             }
+            .padding(.horizontal)
         }
     }
 }
@@ -125,7 +123,6 @@ struct StockGraphCapsule: View {
                 .frame(width: CGFloat(width), height: 400)
             Capsule()
                 .frame(width: CGFloat(width), height: CGFloat(value) / CGFloat(maxValue) * 400)
-                .animation(.easeIn(duration: 0.5))
                 .foregroundColor(.blue)
         }
     }
