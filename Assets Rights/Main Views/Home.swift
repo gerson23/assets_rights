@@ -8,6 +8,11 @@
 
 import SwiftUI
 
+enum GraphType: String, Hashable, Codable, CaseIterable {
+    case by_type = "POR TIPO"
+    case by_year = "POR ANO"
+}
+
 struct Home : View {
     // Temporary bug fix, needs to pass environment to presentation
     @EnvironmentObject var userData: UserData
@@ -16,7 +21,7 @@ struct Home : View {
     @State var showAddStock = false;
     @State var showAction = false;
     @State var showAlert = false;
-    var x = stockData
+    @State var selection: GraphType = GraphType.by_type;
     
     var addButton: some View {
         Button(action: { self.showAddStock.toggle() }) {
@@ -39,20 +44,29 @@ struct Home : View {
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading) {
-                
-                StockGraph(self.stockStore.stocks)
+            VStack(alignment: .center) {
+                Picker("", selection: $selection) {
+                    ForEach(GraphType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.top)
+
+                StockGraph(self.stockStore.stocks, self.$selection)
                 
                 Button(action: { self.showAction = true }) {
-                    HStack {
+                    VStack {
                         Image(systemName: "plus.circle.fill")
                             .imageScale(.large)
-                            .foregroundColor(.orange)
+                            .foregroundColor(.blue)
                             .scaledToFill()
-                        Text("Adicionar Bem")
-                            .foregroundColor(.orange)
+                        Text("Adicionar")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                            .padding(.top)
                     }
-                    .font(.system(size: 23))
+                    .font(.system(size: 40))
                 }
                 .padding(.bottom)
                 .actionSheet(isPresented: $showAction) {
@@ -68,7 +82,9 @@ struct Home : View {
                     Alert(title: Text("Indisponível no momento"))
                 }
             }
-        .navigationBarTitle("Bens e Direitos")
+            .navigationBarTitle("Bens e Direitos")
+            //.background(Color.purple.opacity(0.1))
+            //  .edgesIgnoringSafeArea(.top)
         }
     }
 }

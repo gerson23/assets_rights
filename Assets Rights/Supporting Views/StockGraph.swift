@@ -14,42 +14,86 @@ let STOCK_LABELS: [TypeStock:String] = [
     TypeStock.stock: "Ação"]
 
 struct StockGraph: View {
-    var stockData: [TypeStock: Double] = [:]
-    var maxData: Double = 0.0
+    var stockData: [GraphType: [String: Double]] = [:]
+    var maxData: [GraphType: Double] = [:]
+    var labels: [GraphType: Array<String>] = [:]
     
-    init(_ stocks: [Stock]) {
+    @Binding var selectedType: GraphType
+    
+    init(_ stocks: [Stock], _ selection: Binding<GraphType>) {
+        self._selectedType = selection
+        
+        GraphType.allCases.forEach {
+            let type = $0
+            self.stockData[type] = [:]
+            self.maxData[type] = 0.0
+        }
+        
+        // BY TYPE
         TypeStock.allCases.forEach {
             let type = $0
-            self.stockData[type] = 0.0
+            let typeName = STOCK_LABELS[type]!
+            
+            self.stockData[GraphType.by_type]![typeName] = 0.0
             
             for stock in stocks {
                 if(stock.type == type) {
                     for move in stock.movement {
 //                        if(move.type == TypeAction.buy)
-                        self.stockData[type]! += move.avgPrice * Double(move.quantity)
+                        self.stockData[GraphType.by_type]![typeName]! += move.avgPrice * Double(move.quantity)
                     }
                 }
             }
-            if(self.stockData[type]! > self.maxData) {
-                self.maxData += self.stockData[type]!
+            if(self.stockData[GraphType.by_type]![typeName]! > self.maxData[GraphType.by_type]!) {
+                self.maxData[GraphType.by_type]! += self.stockData[GraphType.by_type]![typeName]!
             }
         }
         
+        
+        // BY YEAR
+        var yearsTotal: [String: Double] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY"
+        for stock in stocks {
+            for move in stock.movement {
+                let yearMove = dateFormatter.string(from: move.actionDate)
+                let amount = yearsTotal[yearMove] ?? 0.0
+                yearsTotal[yearMove] = amount + (move.avgPrice * Double(move.quantity))
+            }
+        }
+        
+        for (year, total) in yearsTotal {
+            self.stockData[GraphType.by_year]![year] = total
+            if(total > self.maxData[GraphType.by_year]!) {
+                self.maxData[GraphType.by_year] = total
+            }
+        }
+        
+        self.labels[GraphType.by_year] = Array(self.stockData[GraphType.by_year]!.keys)
+        self.labels[GraphType.by_type] = Array(self.stockData[GraphType.by_type]!.keys)
+        
         // avoid division by 0
-        if(self.maxData == 0) {
-            self.maxData = 1
+        GraphType.allCases.forEach {
+            let type = $0
+            
+            if(self.maxData[type] == 0) {
+                self.maxData[type] = 1
+            }
+            
+            self.labels[type] = Array(self.stockData[type]!.keys)
         }
     }
     
     var body: some View {
         GeometryReader { geometry in
             HStack {
-                ForEach(TypeStock.allCases, id: \.self) { type in
+                ForEach(self.labels[self.selectedType]!, id: \.self) { key in
                     VStack {
-                        Text(currencyDouble2String(curDouble: self.stockData[type] ?? 0.0))
+                        Text(currencyDouble2String(curDouble: self.stockData[self.selectedType]![key] ?? 0.0))
                             .font(.callout)
-                        StockGraphCapsule(value: self.stockData[type] ?? 0.0, maxValue: self.maxData, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
-                        Text(STOCK_LABELS[type]!)
+                        StockGraphCapsule(value: self.stockData[self.selectedType]![key] ?? 0.0, maxValue: self.maxData[self.selectedType]!, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
+                            .animation(.default)
+                        Text(key)
                     }
                 }
             }
@@ -87,8 +131,8 @@ struct StockGraphCapsule: View {
     }
 }
 
-struct StockGraph_Previews: PreviewProvider {
+/*struct StockGraph_Previews: PreviewProvider {
     static var previews: some View {
-        StockGraph([])
+        StockGraph([], GraphType.by_type)
     }
-}
+}*/

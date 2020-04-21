@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Overview : View {
     @EnvironmentObject var stockStore: StockStore
-      
+          
     func deleteAction(at offsets: IndexSet) {
         stockStore.removeStock(at: offsets.first ?? -1)
     }

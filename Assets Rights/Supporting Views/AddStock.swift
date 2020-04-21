@@ -105,7 +105,7 @@ struct AddStock : View {
                     if let avgPriceDouble = self.currencyString2Double(self.fields.avgPrice) {
                         if let quantityInt = Int(self.fields.quantity) {
                             if let taxesDouble = self.currencyString2Double(self.fields.taxes) {
-                                movement = Action(avgPrice: avgPriceDouble, taxes: taxesDouble, quantity: quantityInt, type: self.action.type)
+                                movement = Action(actionDate: self.action.actionDate, avgPrice: avgPriceDouble, taxes: taxesDouble, quantity: quantityInt, type: self.action.type)
                             }
                             else {
                                 self.fields.taxes = ""
@@ -121,7 +121,7 @@ struct AddStock : View {
                         self.fields.avgPrice = ""
                         return
                     }
-                    
+
                     self.stock.movement.append(movement)
                     self.stockStore.addStock(self.stock)
                     self.isPresented = false
