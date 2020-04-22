@@ -11,6 +11,7 @@ import SwiftUI
 let MAX_CAPSULE_WIDTH: Double = 40
 let STOCK_LABELS: [TypeStock:String] = [
     TypeStock.fii: "FII",
+    TypeStock.fund: "Fundos",
     TypeStock.stock: "Ação"]
 
 struct StockGraph: View {

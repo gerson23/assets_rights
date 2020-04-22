@@ -51,5 +51,6 @@ enum TypeAction: String, CaseIterable, Hashable, Codable {
 
 enum TypeStock: String, CaseIterable, Hashable, Codable {
     case fii = "Código 73 (FIIs)"
+    case fund = "Código 74 (Fundos/ETFs)"
     case stock = "Código 31 (Ações)"
 }

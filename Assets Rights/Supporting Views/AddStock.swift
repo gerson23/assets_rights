@@ -65,8 +65,10 @@ struct AddStock : View {
                 if stock.ticker == ticker {
                     if(stock.bdi == "002") {
                         self.stock.type = TypeStock.stock
-                    } else if (stock.bdi == "012") {
+                    } else if(stock.bdi == "012") {
                         self.stock.type = TypeStock.fii
+                    } else if(stock.bdi == "014") {
+                        self.stock.type = TypeStock.fund
                     }
                     return true
                 }
