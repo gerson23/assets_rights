@@ -89,7 +89,7 @@ struct StockGraph: View {
                         VStack {
                             Text(currencyDouble2String(curDouble: self.stockData[self.selectedType]![key] ?? 0.0))
                                 .font(.callout)
-                            StockGraphCapsule(value: self.stockData[self.selectedType]![key] ?? 0.0, maxValue: self.maxData[self.selectedType]!, width: Double(geometry.size.width - 150) / Double(self.stockData.count))
+                            StockGraphCapsule(value: self.stockData[self.selectedType]![key] ?? 0.0, maxValue: self.maxData[self.selectedType]!, width: Double(geometry.size.width - 150) / Double(self.stockData.count), height: Double(geometry.size.height - 100))
                             Text(key)
                         }
                     }
@@ -103,16 +103,18 @@ struct StockGraph: View {
 struct StockGraphCapsule: View {
     var value: Double
     var maxValue: Double
-    var width: Double
+    var width: CGFloat
+    var height: CGFloat
     
-    init(value: Double, maxValue: Double, width: Double) {
+    init(value: Double, maxValue: Double, width: Double, height: Double) {
         self.value = value
         self.maxValue = maxValue
+        self.height = CGFloat(height)
         if(width < MAX_CAPSULE_WIDTH) {
-            self.width = width
+            self.width = CGFloat(width)
         }
         else {
-            self.width = MAX_CAPSULE_WIDTH
+            self.width = CGFloat(MAX_CAPSULE_WIDTH)
         }
     }
     
@@ -121,9 +123,9 @@ struct StockGraphCapsule: View {
             Capsule()
                 .fill(Color.gray)
                 .opacity(0.1)
-                .frame(width: CGFloat(width), height: 400)
+                .frame(width: CGFloat(width), height: self.height)
             Capsule()
-                .frame(width: CGFloat(width), height: CGFloat(value) / CGFloat(maxValue) * 400)
+                .frame(width: CGFloat(width), height: CGFloat(value) / CGFloat(maxValue) * self.height)
                 .foregroundColor(.blue)
         }
     }

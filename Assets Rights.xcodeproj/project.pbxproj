@@ -65,7 +65,7 @@
 		DEB06A60244CF858006FAE0A /* StockGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockGraph.swift; sourceTree = "<group>"; };
 		DEB06A64244FDAE2006FAE0A /* stocks_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stocks_data.json; sourceTree = "<group>"; };
 		DEF6C84E2332CEEC00D1DF59 /* OverviewEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewEdit.swift; sourceTree = "<group>"; };
-		DEF7EECD22C8D1B60027D4C8 /* Assets Rights.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assets Rights.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEF7EECD22C8D1B60027D4C8 /* Bens e Direitos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bens e Direitos.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEF7EED022C8D1B60027D4C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DEF7EED222C8D1B60027D4C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		DEF7EED422C8D1B60027D4C8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 		DEF7EECE22C8D1B60027D4C8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DEF7EECD22C8D1B60027D4C8 /* Assets Rights.app */,
+				DEF7EECD22C8D1B60027D4C8 /* Bens e Direitos.app */,
 				DEF7EEE322C8D1BA0027D4C8 /* Assets RightsTests.xctest */,
 				DEF7EEEE22C8D1BA0027D4C8 /* Assets RightsUITests.xctest */,
 			);
@@ -241,7 +241,7 @@
 			);
 			name = "Assets Rights";
 			productName = "Assets Rights";
-			productReference = DEF7EECD22C8D1B60027D4C8 /* Assets Rights.app */;
+			productReference = DEF7EECD22C8D1B60027D4C8 /* Bens e Direitos.app */;
 			productType = "com.apple.product-type.application";
 		};
 		DEF7EEE222C8D1BA0027D4C8 /* Assets RightsTests */ = {
@@ -548,7 +548,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "gerson23.Assets-Rights";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Bens e Direitos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -568,7 +568,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "gerson23.Assets-Rights";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Bens e Direitos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
