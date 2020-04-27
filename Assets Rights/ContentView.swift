@@ -10,8 +10,26 @@ import SwiftUI
 
 struct ContentView : View {
     @EnvironmentObject var userData: UserData
+    @EnvironmentObject var settings: SettingsStore
     
-    @State private var selection = 0
+    @State private var selection: Int
+    @State var showIntro: Bool
+    
+    init() {
+        self._selection = State(initialValue: 0)
+        self._showIntro = State(initialValue: false)
+    }
+    
+    func checkState() {
+        let distance = settings.introductionAcceptedDate.timeIntervalSince(RELEASE_DATE)
+        
+        if(!settings.introductionAccepted) {
+            self.showIntro.toggle()
+        }
+        else if(settings.introductionAccepted && distance < 0) {
+            self.showIntro.toggle()
+        }
+    }
     
     var body: some View {
         TabView(selection: $selection) {
@@ -42,6 +60,11 @@ struct ContentView : View {
                 }
             }
         }
+        .sheet(isPresented: self.$showIntro) {
+            Introduction(isPresented: self.$showIntro)
+                .environmentObject(self.settings)
+        }
+        .onAppear(perform: checkState)
     }
 }
 

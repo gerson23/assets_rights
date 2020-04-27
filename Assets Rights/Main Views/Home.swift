@@ -43,8 +43,11 @@ struct Home : View {
     }
     
     var body: some View {
-        NavigationView {
+        VStack {
             VStack(alignment: .center) {
+                Text("Bens e Direitos")
+                    .font(.custom("Optima-ExtraBlack", size: 40))
+                
                 Picker("", selection: $selection) {
                     ForEach(GraphType.allCases, id: \.self) { type in
                         Text(type.rawValue).tag(type)
@@ -82,7 +85,7 @@ struct Home : View {
                     Alert(title: Text("Indisponível no momento"))
                 }
             }
-            .navigationBarTitle("Bens e Direitos")
+            //.navigationBarTitle("Bens e Direitos")
             //.background(Color.purple.opacity(0.1))
             //  .edgesIgnoringSafeArea(.top)
         }

@@ -33,7 +33,19 @@ class  SettingsStore : ObservableObject, Identifiable {
         get { defaults.bool(forKey: Keys.notificationEnabled)}
     }
     
+    var introductionAccepted: Bool {
+        set { defaults.set(newValue, forKey: Keys.introductionAccepted)}
+        get { defaults.bool(forKey: Keys.introductionAccepted)}
+    }
+    
+    var introductionAcceptedDate: Date {
+        set { defaults.set(newValue, forKey: Keys.introductionAcceptedDate)}
+        get { defaults.object(forKey: Keys.introductionAcceptedDate) as! Date}
+    }
+    
     private enum Keys {
         static let notificationEnabled = "notification_enabled"
+        static let introductionAccepted = "intro_accepted"
+        static let introductionAcceptedDate = "intro_date"
     }
 }

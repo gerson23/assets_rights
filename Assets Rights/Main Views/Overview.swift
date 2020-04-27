@@ -30,6 +30,8 @@ struct Overview : View {
                 .onDelete(perform: deleteAction)
             }
             .navigationBarTitle("Resumo")
+            
+            Text("Nenhum item selecionado")
         }
     }
 }

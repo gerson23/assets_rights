@@ -77,3 +77,6 @@ func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String: Double]) {
 // CONSTANTS
 let NS_INVALID_NUMBER: NSNumber = 99999999
 let INVALID_NUMBER: Double = 99999999
+
+// 609897600 => 30-Apr-2020
+let RELEASE_DATE: Date = Date(timeIntervalSinceReferenceDate: 609897600)
