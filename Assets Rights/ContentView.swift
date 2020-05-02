@@ -34,31 +34,28 @@ struct ContentView : View {
     var body: some View {
         TabView(selection: $selection) {
             Home()
-            .tag(0)
-            .tabItem {
-                VStack {
-                    Image(systemName: "house.fill")
-                    Text("Principal")
-                }
-            }
+                .tag(0)
+                .tabItem {
+                    TabViewItem(iconName: "house.fill", caption: "Principal")
+                    }
             
             Overview()
-            .tag(1)
-            .tabItem {
-                VStack {
-                    Image(systemName: "doc.plaintext")
-                    Text("Resumo")
+                .tag(1)
+                .tabItem {
+                    TabViewItem(iconName: "doc.plaintext", caption: "Resumo")
                 }
-            }
+            
+            Operations()
+                .tag(2)
+                .tabItem {
+                    TabViewItem(iconName: "plus.slash.minus", caption: "Operações")
+                }
             
             Settings()
-            .tag(2)
-            .tabItem {
-                VStack {
-                    Image(systemName: "wrench.fill")
-                    Text("Ajustes")
+                .tag(3)
+                .tabItem {
+                    TabViewItem(iconName: "wrench.fill", caption: "Ajustes")
                 }
-            }
         }
         .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
@@ -66,6 +63,18 @@ struct ContentView : View {
                 .environmentObject(self.settings)
         }
         .onAppear(perform: checkState)
+    }
+}
+
+struct TabViewItem : View {
+    var iconName: String
+    var caption: String
+    
+    var body: some View {
+        VStack {
+            Image(systemName: self.iconName)
+            Text(self.caption)
+        }
     }
 }
 

@@ -26,6 +26,9 @@ struct SettingsForm : View {
                 NavigationLink(destination: About()) {
                     Text("Sobre")
                 }
+                NavigationLink(destination: Introduction(isPresented: .constant(true))) {
+                    Text("Introdução")
+                }
             }
             
             Section {
