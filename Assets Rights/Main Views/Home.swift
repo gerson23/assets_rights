@@ -55,6 +55,7 @@ struct Home : View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.top)
+                .padding(.horizontal)
 
                 StockGraph(self.stockStore.stocks, self.$selection)
                 
@@ -62,11 +63,9 @@ struct Home : View {
                     VStack {
                         Image(systemName: "plus.circle.fill")
                             .imageScale(.large)
-                            .foregroundColor(.blue)
                             .scaledToFill()
                         Text("Adicionar")
                             .font(.caption)
-                            .foregroundColor(.blue)
                             .padding(.top)
                     }
                     .font(.system(size: 40))

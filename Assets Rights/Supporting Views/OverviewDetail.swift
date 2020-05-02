@@ -65,7 +65,7 @@ struct OverviewDetail: View {
                 Section {
                     NavigationLink(destination: OverviewEdit(stock: self.stock, company: self.company)) {
                         Text("Extrato")
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentColor)
                     }
                     Button(action: { self.showRemoveAlert = true }) {
                         Text("Remover título")

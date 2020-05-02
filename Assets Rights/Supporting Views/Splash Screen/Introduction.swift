@@ -41,7 +41,7 @@ struct Introduction: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .frame(width: geometry.size.width, height: 50)
-                            .foregroundColor(Color("AR-Blue"))
+                            .foregroundColor(.accentColor)
                     
                         Text("Continuar")
                             .foregroundColor(.white)
@@ -51,6 +51,7 @@ struct Introduction: View {
             }
         }
         .padding(.horizontal, 30)
+        .accentColor(.mainColor)
     }
 }
 

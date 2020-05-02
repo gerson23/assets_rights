@@ -60,6 +60,7 @@ struct ContentView : View {
                 }
             }
         }
+        .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
             Introduction(isPresented: self.$showIntro)
                 .environmentObject(self.settings)

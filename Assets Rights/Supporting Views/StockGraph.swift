@@ -104,12 +104,13 @@ struct StockGraphCapsule: View {
     var value: Double
     var maxValue: Double
     var width: CGFloat
-    var height: CGFloat
+    var fheight: CGFloat
+    @State var height: CGFloat = 0.0
     
     init(value: Double, maxValue: Double, width: Double, height: Double) {
         self.value = value
         self.maxValue = maxValue
-        self.height = CGFloat(height)
+        self.fheight = CGFloat(height)
         if(width < MAX_CAPSULE_WIDTH) {
             self.width = CGFloat(width)
         }
@@ -118,16 +119,23 @@ struct StockGraphCapsule: View {
         }
     }
     
+    func fillAnimation() {
+        withAnimation(Animation.spring()) {
+            self.height = self.fheight
+        }
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom){
             Capsule()
                 .fill(Color.gray)
                 .opacity(0.1)
-                .frame(width: CGFloat(width), height: self.height)
+                .frame(width: CGFloat(width), height: self.fheight)
             Capsule()
                 .frame(width: CGFloat(width), height: CGFloat(value) / CGFloat(maxValue) * self.height)
-                .foregroundColor(.blue)
+                .foregroundColor(.accentColor)
         }
+        .onAppear(perform: fillAnimation)
     }
 }
 

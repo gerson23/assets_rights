@@ -32,7 +32,11 @@ func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String: Double]) {
     dateFormatter.dateFormat = "YYYY"
     
     let sortedMoves = movements.sorted(by: {$0.actionDate < $1.actionDate})
-    var lastYear = (Int(dateFormatter.string(from: sortedMoves[0].actionDate)) ?? 1) - 1
+    var lastYear = Int(dateFormatter.string(from: Date()))!
+
+    if(sortedMoves.count != 0) {
+        lastYear = (Int(dateFormatter.string(from: sortedMoves[0].actionDate)) ?? 1) - 1
+    }
     
     for move in sortedMoves {
         let moveYear = Int(dateFormatter.string(from: move.actionDate))!
@@ -79,4 +83,4 @@ let NS_INVALID_NUMBER: NSNumber = 99999999
 let INVALID_NUMBER: Double = 99999999
 
 // 609897600 => 30-Apr-2020
-let RELEASE_DATE: Date = Date(timeIntervalSinceReferenceDate: 609897600)
+let RELEASE_DATE: Date = Date(timeIntervalSince1970: 1588466060)

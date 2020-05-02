@@ -179,6 +179,7 @@ struct AddStock : View {
                 }
             }
         }
+        .accentColor(.mainColor)
     }
 }
 

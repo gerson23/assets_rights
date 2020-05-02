@@ -40,7 +40,7 @@ class  SettingsStore : ObservableObject, Identifiable {
     
     var introductionAcceptedDate: Date {
         set { defaults.set(newValue, forKey: Keys.introductionAcceptedDate)}
-        get { defaults.object(forKey: Keys.introductionAcceptedDate) as! Date}
+        get { defaults.object(forKey: Keys.introductionAcceptedDate) as? Date ?? Date(timeIntervalSince1970: 0)}
     }
     
     private enum Keys {

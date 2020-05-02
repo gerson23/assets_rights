@@ -18,7 +18,7 @@ struct IntroItem: View {
             Image(systemName: self.imageName)
                 .imageScale(.large)
                 .font(.system(size: 30))
-                .foregroundColor(Color("AR-Blue"))
+                .foregroundColor(.accentColor)
                 .padding(.horizontal)
             VStack(alignment: .leading) {
                 Text(self.title)
