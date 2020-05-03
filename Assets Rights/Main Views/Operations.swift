@@ -9,12 +9,12 @@
 import SwiftUI
 
 let OPTIONS : [[String:String]] = [
-    ["title": "Operações Comuns / Day-Trade", "short_title": "Ações Comuns"],
-    ["title": "Operações Fundos Invest. Imob.", "short_title": "FIIs", "icon": "book"],
-    ["title": "Operações Gerais", "short_title": "Bens Gerais", "icon": "arrow.swap"]
+    ["title": "Operações Comuns / Day-Trade", "short_title": "Ações Comuns", "type": TypeStock.stock.rawValue],
+    ["title": "Operações Fundos Invest. Imob.", "short_title": "FIIs", "type": TypeStock.fii.rawValue, "icon": "book"],
+    ["title": "Operações Gerais", "short_title": "Bens Gerais", "type": TypeStock.fund.rawValue, "icon": "arrow.swap"]
 ]
 
-let years = ["2019", "2018", "2017", "2016", "2015", "2014"]
+let years = ["2020", "2019", "2018", "2017", "2016", "2015", "2014"]
 
 struct Operations: View {
     @EnvironmentObject var stockStore: StockStore
@@ -35,7 +35,7 @@ struct Operations: View {
 
                 VStack {
                     ForEach(OPTIONS, id: \.self) { opt in
-                        NavigationLink(destination: OperationsDetail(title: opt["short_title"]!)) {
+                        NavigationLink(destination: OperationsDetail(title: opt["short_title"]!, year: years[self.selectedYear], type: TypeStock(rawValue: opt["type"]!)!)) {
 
                             OperationCard(title: opt["title"]!, icon: opt["icon"] ?? "arrow.up.and.down")
                         }
@@ -67,7 +67,6 @@ struct Operations: View {
                             }
                             .padding()
                         }
-
                     }
                     .background(Color(UIColor.systemBackground)), alignment: .top)
 

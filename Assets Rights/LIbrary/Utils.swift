@@ -24,10 +24,10 @@ func currencyDouble2String(curDouble: Double, isAverage: Bool = false) -> String
     return returnVal
 }
 
-func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String: Double]) {
+func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String:YearAmount]) {
     var amount = 0.0
     var quantity = 0
-    var yearTotal: [String: Double] = [:]
+    var yearTotal: [String: YearAmount] = [:]
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "YYYY"
     
@@ -44,12 +44,12 @@ func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String: Double]) {
         
         if(yearDiff == 1) {
             lastYear += 1
-            yearTotal[String(lastYear)] = amount
+            yearTotal[String(lastYear)] = YearAmount(amount: amount, quantity: quantity)
         }
         else if (yearDiff > 1) {
             repeat {
                 lastYear += 1
-                yearTotal[String(lastYear)] = amount
+                yearTotal[String(lastYear)] = YearAmount(amount: amount, quantity: quantity)
                 yearDiff -= 1
             } while(yearDiff >= 1)
         }
@@ -62,17 +62,17 @@ func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String: Double]) {
         else if move.type == TypeAction.sell {
             let quantity_sold = move.quantity
             amount = (amount/Double(quantity)) * Double(quantity - quantity_sold)
-            quantity = quantity_sold
+            quantity -= quantity_sold
         }
         
-        yearTotal[String(moveYear)] = amount
+        yearTotal[String(moveYear)] = YearAmount(amount: amount, quantity: quantity)
     }
     
     // Fill up in case there's no movement in the current year
     let thisYear = Int(dateFormatter.string(from: Date()))!
     while(lastYear < thisYear) {
         lastYear += 1
-        yearTotal[String(lastYear)] = amount
+        yearTotal[String(lastYear)] = YearAmount(amount: amount, quantity: quantity)
     }
             
     return (amount, quantity, yearTotal)
@@ -84,3 +84,11 @@ let INVALID_NUMBER: Double = 99999999
 
 // 609897600 => 30-Apr-2020
 let RELEASE_DATE: Date = Date(timeIntervalSince1970: 1588466060)
+
+struct YearAmount {
+    var amount: Double
+    var quantity: Int
+    var avgPrice: Double {
+        get { amount / Double(quantity) }
+    }
+}

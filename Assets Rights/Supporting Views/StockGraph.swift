@@ -56,8 +56,8 @@ struct StockGraph: View {
         for stock in stocks {
             let stockAmount = calcTotalbyStock(movements: stock.movement)
             
-            for (year, total) in stockAmount.2 {
-                yearsTotal[year] = (yearsTotal[year] ?? 0.0) + total
+            for (year, yamount) in stockAmount.2 {
+                yearsTotal[year] = (yearsTotal[year] ?? 0.0) + yamount.amount
             }
         }
         
