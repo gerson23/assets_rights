@@ -58,35 +58,7 @@ struct Home : View {
                 .padding(.horizontal)
 
                 StockGraph(self.stockStore.stocks, self.$selection)
-                
-                Button(action: { self.showAction = true }) {
-                    VStack {
-                        Image(systemName: "plus.circle.fill")
-                            .imageScale(.large)
-                            .scaledToFill()
-                        Text("Adicionar")
-                            .font(.caption)
-                            .padding(.top)
-                    }
-                    .font(.system(size: 40))
-                }
-                .padding(.bottom)
-                .actionSheet(isPresented: $showAction) {
-                    actions
-                }
-                                
-                .sheet(isPresented: $showAddStock) {
-                    AddStock(isPresented: self.$showAddStock)
-                        .environmentObject(self.userData)
-                        .environmentObject(self.stockStore)
-                }
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text("Indisponível no momento"))
-                }
             }
-            //.navigationBarTitle("Bens e Direitos")
-            //.background(Color.purple.opacity(0.1))
-            //  .edgesIgnoringSafeArea(.top)
         }
     }
 }

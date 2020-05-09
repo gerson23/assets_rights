@@ -11,14 +11,13 @@ import SwiftUI
 struct ContentView : View {
     @EnvironmentObject var userData: UserData
     @EnvironmentObject var settings: SettingsStore
+    @EnvironmentObject var stockStore: StockStore
+
     
-    @State private var selection: Int
-    @State var showIntro: Bool
-    
-    init() {
-        self._selection = State(initialValue: 0)
-        self._showIntro = State(initialValue: false)
-    }
+    @State private var selection: TypeView = TypeView.home
+    @State var showIntro = false
+    @State var showAddStock = false
+    @State var showAction = false
     
     func checkState() {
         let distance = settings.introductionAcceptedDate.timeIntervalSince(RELEASE_DATE)
@@ -31,36 +30,66 @@ struct ContentView : View {
         }
     }
     
+    var actions: ActionSheet {
+        ActionSheet(title: Text("Escolha tipo de novo bem"),
+                    //message: Text("Escolha tipo de novo bem"),
+                    buttons: [
+                        .default(Text("Ações"), action: { self.showAddStock.toggle() }),
+                        //.default(Text("Fundos"), action: {self.showAlert.toggle() }),
+                        .cancel(Text("Cancelar"))])
+    }
     var body: some View {
-        TabView(selection: $selection) {
-            Home()
-                .tag(0)
-                .tabItem {
-                    TabViewItem(iconName: "house.fill", caption: "Principal")
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selection) {
+                Home()
+                    .tag(TypeView.home)
+                    .tabItem {
+                        Text("")
                     }
-            
-            Overview()
-                .tag(1)
-                .tabItem {
-                    TabViewItem(iconName: "doc.plaintext", caption: "Resumo")
+                
+                Overview()
+                    .tag(TypeView.overview)
+                    .tabItem {
+                        Text("")
+                    }
+                
+                Operations()
+                    .tag(TypeView.operations)
+                    .tabItem {
+                        Text("")
+                    }
+                
+                Settings()
+                    .tag(TypeView.settings)
+                    .tabItem {
+                        Text("")
+                    }
+            }
+            HStack(alignment: .center) {
+                TabViewItem(iconName: "house", caption: "Principal", id: TypeView.home, selection: self.$selection)
+                TabViewItem(iconName: "folder", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
+                Button(action: {self.showAction.toggle()}) {
+                    Image(systemName: "plus.circle.fill")
+                        .scaledToFill()
+                        .font(.system(size: 50))
                 }
-            
-            Operations()
-                .tag(2)
-                .tabItem {
-                    TabViewItem(iconName: "plus.slash.minus", caption: "Operações")
+                .actionSheet(isPresented: $showAction) {
+                    actions
                 }
-            
-            Settings()
-                .tag(3)
-                .tabItem {
-                    TabViewItem(iconName: "wrench.fill", caption: "Ajustes")
-                }
+                TabViewItem(iconName: "arrow.up.arrow.down.square", caption: "Operações", id: TypeView.operations, selection: self.$selection)
+                TabViewItem(iconName: "wrench", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
+
+            }
         }
         .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
             Introduction(isPresented: self.$showIntro)
                 .environmentObject(self.settings)
+        }
+        .sheet(isPresented: $showAddStock) {
+            AddStock(isPresented: self.$showAddStock)
+                .environmentObject(self.userData)
+                .environmentObject(self.stockStore)
         }
         .onAppear(perform: checkState)
     }
@@ -69,13 +98,27 @@ struct ContentView : View {
 struct TabViewItem : View {
     var iconName: String
     var caption: String
+    var id: TypeView
+    
+    @Binding var selection: TypeView
     
     var body: some View {
         VStack {
-            Image(systemName: self.iconName)
+            Image(systemName: selection == id ? self.iconName + ".fill" : self.iconName)
+                .imageScale(.large)
+                .font(Font.body.weight(.thin))
             Text(self.caption)
+                .font(.caption)
+        }
+        .padding(.horizontal)
+        .onTapGesture {
+            self.selection = self.id
         }
     }
+}
+
+enum TypeView: Int {
+    case home = 0, overview, operations, settings
 }
 
 #if DEBUG
