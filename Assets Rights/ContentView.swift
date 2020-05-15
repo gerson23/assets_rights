@@ -38,48 +38,40 @@ struct ContentView : View {
                         //.default(Text("Fundos"), action: {self.showAlert.toggle() }),
                         .cancel(Text("Cancelar"))])
     }
+   
     var body: some View {
-        ZStack(alignment: .bottom) {
-            TabView(selection: $selection) {
+        VStack {
+            // Get main view
+            if(selection == TypeView.home) {
                 Home()
-                    .tag(TypeView.home)
-                    .tabItem {
-                        Text("")
-                    }
-                
-                Overview()
-                    .tag(TypeView.overview)
-                    .tabItem {
-                        Text("")
-                    }
-                
-                Operations()
-                    .tag(TypeView.operations)
-                    .tabItem {
-                        Text("")
-                    }
-                
-                Settings()
-                    .tag(TypeView.settings)
-                    .tabItem {
-                        Text("")
-                    }
             }
+            else if(selection == TypeView.overview) {
+                Overview()
+            }
+            else if(selection == TypeView.operations) {
+                Operations()
+            }
+            else if(selection == TypeView.settings) {
+                Settings()
+            }
+         
+            // Custom tab bar
+            Divider()
             HStack(alignment: .center) {
                 TabViewItem(iconName: "house", caption: "Principal", id: TypeView.home, selection: self.$selection)
-                TabViewItem(iconName: "folder", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
+                TabViewItem(iconName: "list.bullet", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
                 Button(action: {self.showAction.toggle()}) {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "plus.rectangle.fill")
                         .scaledToFill()
-                        .font(.system(size: 50))
+                        .font(.system(size: 40))
                 }
                 .actionSheet(isPresented: $showAction) {
                     actions
                 }
                 TabViewItem(iconName: "arrow.up.arrow.down.square", caption: "Operações", id: TypeView.operations, selection: self.$selection)
                 TabViewItem(iconName: "wrench", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
-
             }
+            .padding(.top, 2)
         }
         .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
@@ -104,9 +96,9 @@ struct TabViewItem : View {
     
     var body: some View {
         VStack {
-            Image(systemName: selection == id ? self.iconName + ".fill" : self.iconName)
+            Image(systemName: selection == id ? self.iconName  : self.iconName)
                 .imageScale(.large)
-                .font(Font.body.weight(.thin))
+                .font(Font.body.weight(selection == id ? .heavy : .light))
             Text(self.caption)
                 .font(.caption)
         }
