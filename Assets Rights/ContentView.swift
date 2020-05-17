@@ -58,8 +58,8 @@ struct ContentView : View {
             // Custom tab bar
             Divider()
             HStack(alignment: .center) {
-                TabViewItem(iconName: "house", caption: "Principal", id: TypeView.home, selection: self.$selection)
-                TabViewItem(iconName: "list.bullet", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
+                TabViewItem(iconName: "house", iconSelected: "house.fill", caption: "Principal", id: TypeView.home, selection: self.$selection)
+                TabViewItem(iconName: "list.bullet", iconSelected: "list.bullet", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
                 Button(action: {self.showAction.toggle()}) {
                     Image(systemName: "plus.rectangle.fill")
                         .scaledToFill()
@@ -68,10 +68,10 @@ struct ContentView : View {
                 .actionSheet(isPresented: $showAction) {
                     actions
                 }
-                TabViewItem(iconName: "arrow.up.arrow.down.square", caption: "Operações", id: TypeView.operations, selection: self.$selection)
-                TabViewItem(iconName: "wrench", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
+                TabViewItem(iconName: "arrow.up.arrow.down.square", iconSelected: "arrow.up.arrow.down.square.fill", caption: "Operações", id: TypeView.operations, selection: self.$selection)
+                TabViewItem(iconName: "wrench", iconSelected: "wrench.fill", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
             }
-            .padding(.top, 2)
+            .padding(.top, 4)
         }
         .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
@@ -89,6 +89,7 @@ struct ContentView : View {
 
 struct TabViewItem : View {
     var iconName: String
+    var iconSelected: String
     var caption: String
     var id: TypeView
     
@@ -96,7 +97,7 @@ struct TabViewItem : View {
     
     var body: some View {
         VStack {
-            Image(systemName: selection == id ? self.iconName  : self.iconName)
+            Image(systemName: selection == id ? self.iconSelected  : self.iconName)
                 .imageScale(.large)
                 .font(Font.body.weight(selection == id ? .heavy : .light))
             Text(self.caption)

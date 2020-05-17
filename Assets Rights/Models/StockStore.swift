@@ -96,4 +96,34 @@ class StockStore : ObservableObject, Identifiable {
             print("Could not encode stocks")
         }
     }
+    
+    /// Verify if a given ticker is valid against the database of valid stocks
+    ///
+    /// - Parameters:
+    ///   - ticker: Ticker string from user input
+    /// - Returns: *true* if it is a valid ticker. *false* otherwise.
+    func verifyTicker(_ ticker: String) -> (TypeStock?, Company?) {
+        let fixTicker = ticker.uppercased()
+        let companyRng = fixTicker.range(of: patternCompany, options: .regularExpression)
+        let company = String(fixTicker[companyRng!])
+        var type: TypeStock?
+        
+        
+        if let companyData = stockData[company] {
+            for stock in companyData.stocks {
+                if stock.ticker == ticker {
+                    if(stock.bdi == "002") {
+                        type = TypeStock.stock
+                    } else if(stock.bdi == "012") {
+                        type = TypeStock.fii
+                    } else if(stock.bdi == "014") {
+                        type = TypeStock.fund
+                    }
+                    return (type, companyData)
+                }
+            }
+        }
+        
+        return (nil, nil)
+    }
 }

@@ -24,6 +24,16 @@ func currencyDouble2String(curDouble: Double, isAverage: Bool = false) -> String
     return returnVal
 }
 
+func currencyString2Double(_ stringVal: String) -> Double? {
+    let converted: Double = Double(truncating: currencyFormat.number(from: stringVal) ??
+        currencyFormat.number(from: currencyFormat.currencySymbol + stringVal) ??
+        NS_INVALID_NUMBER)
+    if(converted == INVALID_NUMBER) {
+        return nil
+    }
+    return converted
+}
+
 func calcTotalbyStock(movements: [Action]) -> (Double, Int, [String:YearAmount]) {
     var amount = 0.0
     var quantity = 0
@@ -84,6 +94,10 @@ let INVALID_NUMBER: Double = 99999999
 
 // 609897600 => 30-Apr-2020
 let RELEASE_DATE: Date = Date(timeIntervalSince1970: 1588466060)
+
+// REGEX PATTERNS
+let patternTicker = "^[A-Z0-9]+[A-Z][0-9]+$"
+let patternCompany = "^[A-Z0-9]+[A-Z]"
 
 struct YearAmount {
     var amount: Double
