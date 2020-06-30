@@ -52,6 +52,7 @@ struct OperationsDetail: View {
             var result = 0.0
             var yamount = stockTotals.2[String(Int(year)!-1)] ?? YearAmount(amount: 0.0, quantity: 0)
             
+            // calculate monthly results
             for move in stock.movement {
                 let startYear = dateSource.date(from: "01/01/\(self.year)")!
                 let endYear = dateSource.date(from: "31/12/\(self.year)")!

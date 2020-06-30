@@ -12,7 +12,7 @@ import Combine
 class AddStockModel: ObservableObject {
     @Published var stock = Stock() {
         didSet {
-            tickerChecker()
+            tickerChecker(oldValue)
         }
     }
     @Published var action = Action()
@@ -32,7 +32,10 @@ class AddStockModel: ObservableObject {
     }
     
     /// Convert entered text to uppercase and check its validity
-    func tickerChecker() {
+    func tickerChecker(_ oldValue: Stock) {
+        if self.stock.ticker == oldValue.ticker     {
+            return
+        }
         self.stock.ticker = self.stock.ticker.uppercased()
         
         let result = self.stock.ticker.range(of: patternTicker, options: .regularExpression)

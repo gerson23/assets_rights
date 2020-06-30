@@ -13,12 +13,13 @@ struct AddStock : View {
     @Binding var isPresented: Bool
     @EnvironmentObject var userData: UserData
     @EnvironmentObject var stockStore: StockStore
-    
+        
     @State var stock: Stock = Stock()
     @State var action = Action.default
     @State var fields = ActionField()
     
     @ObservedObject var addStockModel = AddStockModel()
+    @ObservedObject var keyboardHelper = KeyboardHelper()
     
     static let tickerFormat: TickerFormatter = TickerFormatter()
         
@@ -31,7 +32,7 @@ struct AddStock : View {
                     self.isPresented = false
                 }) { Text("Cancelar") }
                 Spacer()
-                Text("Nova Ação")
+                Text("Adicionar movimentação")
                     .font(.headline)
                     .bold()
                 Spacer()
@@ -87,10 +88,10 @@ struct AddStock : View {
                     
                     DatePicker("Data execução", selection: $addStockModel.action.actionDate, displayedComponents: .date)
                 }
-                Section(footer: Text("Taxas incluem: corretagem, impostos e emolumentos")) {
-                    FieldLine(title: "Preço médio", placeholder: "R$", keyboard: .decimalPad, field: $addStockModel.fields.avgPrice)
-                    FieldLine(title: "Quantidade", placeholder: "1...", keyboard: .numberPad, field: $addStockModel.fields.quantity)
-                    FieldLine(title: "Taxas", placeholder: "R$", keyboard: .decimalPad, field: $addStockModel.fields.taxes)
+                Section(footer: Text("Taxas incluem: corretagem, impostos e emolumentos").padding(.bottom, keyboardHelper.height)) {
+                    FieldLine(title: "Preço médio", placeholder: "R$", lineType: .currency, field: $addStockModel.fields.avgPrice)
+                    FieldLine(title: "Quantidade", placeholder: "1...", lineType: .integer, field: $addStockModel.fields.quantity)
+                    FieldLine(title: "Taxas", placeholder: "R$", lineType: .currency, field: $addStockModel.fields.taxes)
                 }
             }
         }
@@ -98,34 +99,6 @@ struct AddStock : View {
         .onAppear(perform: {
             self.addStockModel.setStore(self.stockStore)
         })
-    }
-}
-
-struct FieldLine: View {
-    var title: String
-    var placeholder: String
-    var keyboard: UIKeyboardType
-    @Binding var field: String
-    
-    var body: some View {
-        HStack {
-            Text(title)
-            if(keyboard == .decimalPad) {
-                TextField(placeholder, text: $field, onEditingChanged: {changed in
-                    if(!changed) {
-                        let doubleValue = currencyFormat.number(from: currencyFormat.currencySymbol + self.field) ?? 0
-                        self.field = currencyFormat.string(from: doubleValue) ?? ""
-                    }
-                    else { self.field = "" }
-                })
-                    .keyboardType(keyboard)
-                    .multilineTextAlignment(.trailing)
-            } else {
-                TextField(placeholder, text: $field)
-                    .keyboardType(keyboard)
-                    .multilineTextAlignment(.trailing)
-            }
-        }
     }
 }
 
