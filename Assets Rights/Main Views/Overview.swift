@@ -16,23 +16,20 @@ struct Overview : View {
     }
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(TypeStock.allCases, id: \.self) { type in
-                    Section(header: Text(type.rawValue)) {
-                        ForEach(self.stockStore.stocks) { stock in
-                            if(stock.type == type) {
-                                StockRow(stock: stock)
-                            }
+        List {
+            ForEach(TypeStock.allCases, id: \.self) { type in
+                Section(header: Text(type.rawValue)) {
+                    ForEach(self.stockStore.stocks) { stock in
+                        if(stock.type == type) {
+                            StockRow(stock: stock)
                         }
                     }
                 }
-                .onDelete(perform: deleteAction)
             }
+            .onDelete(perform: deleteAction)
             .navigationBarTitle("Resumo")
-            
-            Text("Nenhum item selecionado")
         }
+        .listStyle(InsetGroupedListStyle())
     }
 }
 
@@ -48,9 +45,30 @@ struct StockRow: View {
                    .fontWeight(.light)
                    .foregroundColor(.gray)
            }
+            /*.contextMenu {
+                Button(action: {}) {
+                    HStack {
+                        Text("Extrato")
+                        Image(systemName: "doc.plaintext")
+                    }
+                }
+                Button(action: {}) {
+                    HStack {
+                        Text("Nova Compra")
+                        Image(systemName: "arrow.up.doc")
+                    }
+                }
+                Button(action: {}) {
+                    HStack {
+                        Text("Nova Venda")
+                        Image(systemName: "arrow.down.doc")
+                    }
+                }
+            }*/
         }
     }
 }
+
 #if DEBUG
 struct Overview_Previews : PreviewProvider {
     static var previews: some View {

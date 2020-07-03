@@ -23,57 +23,54 @@ struct Operations: View {
     @State var showOptions = false
     
     var body: some View {
-        NavigationView {
+        VStack {
+            HStack {
+                Text("Ano-Calendário \(years[self.selectedYear])")
+                    .font(.callout)
+                Spacer()
+                OptionsButton(showOptions: self.$showOptions)
+            }
+            .padding(.horizontal, 20)
+
             VStack {
-                HStack {
-                    Text("Ano-Calendário \(years[self.selectedYear])")
-                        .font(.callout)
-                    Spacer()
-                    OptionsButton(showOptions: self.$showOptions)
-                }
-                .padding(.horizontal, 20)
+                ForEach(OPTIONS, id: \.self) { opt in
+                    NavigationLink(destination: OperationsDetail(title: opt["short_title"]!, year: years[self.selectedYear], type: TypeStock(rawValue: opt["type"]!)!)) {
 
-                VStack {
-                    ForEach(OPTIONS, id: \.self) { opt in
-                        NavigationLink(destination: OperationsDetail(title: opt["short_title"]!, year: years[self.selectedYear], type: TypeStock(rawValue: opt["type"]!)!)) {
-
-                            OperationCard(title: opt["title"]!, icon: opt["icon"] ?? "arrow.up.and.down")
-                        }
-                        .disabled(self.showOptions)
+                        OperationCard(title: opt["title"]!, icon: opt["icon"] ?? "arrow.up.and.down")
                     }
-
-                    Spacer()
-
+                    .disabled(self.showOptions)
                 }
-                .onTapGesture {
-                    if(self.showOptions) {
-                        self.showOptions.toggle()
-                    }
-                }
-                //.opacity(self.showOptions ? 0.50 : 1)
-                .blur(radius: self.showOptions ? 10 : 0, opaque: false)
-
-                .overlay(
-                    VStack {
-                        if(self.showOptions) {
-                            VStack {
-                                Picker("Ano", selection: $selectedYear) {
-                                    ForEach(0 ..< years.count) {
-                                        Text(years[$0])
-                                    }
-
-                                }
-                                .font(.headline)
-                            }
-                            .padding()
-                        }
-                    }
-                    .background(Color(UIColor.systemBackground)), alignment: .top)
 
                 Spacer()
+
+            }
+            .onTapGesture {
+                if(self.showOptions) {
+                    self.showOptions.toggle()
+                }
+            }
+            .blur(radius: self.showOptions ? 10 : 0, opaque: false)
+
+            .overlay(
+                VStack {
+                    if(self.showOptions) {
+                        VStack {
+                            Picker("Ano", selection: $selectedYear) {
+                                ForEach(0 ..< years.count) {
+                                    Text(years[$0])
+                                }
+
                             }
-            .navigationBarTitle("Operações")
-        }
+                            .font(.headline)
+                        }
+                        .padding()
+                    }
+                }
+                .background(Color(UIColor.systemBackground)), alignment: .top)
+
+            Spacer()
+                        }
+        .navigationBarTitle("Operações")
     }
 }
 

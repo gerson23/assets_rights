@@ -79,7 +79,7 @@ struct AddStock : View {
                 }
                 
                 Section(header: Text("MOVIMENTAÇÃO")) {
-                    Picker("", selection: $action.type) {
+                    Picker("", selection: $addStockModel.action.type) {
                         ForEach(TypeAction.allCases, id: \.self) { type in
                             Text(type.rawValue).tag(type)
                         }

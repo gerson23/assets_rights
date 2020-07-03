@@ -13,14 +13,17 @@ struct ContentView : View {
     @EnvironmentObject var settings: SettingsStore
     @EnvironmentObject var stockStore: StockStore
 
+    @Environment(\.horizontalSizeClass) var sizeClass
     
-    @State private var selection: TypeView = TypeView.home
+    @State private var selectedSheet: AddSheet = .stock
     @State var showIntro = false
     @State var showAddStock = false
-    @State var showAction = false
+    @State var showAddFixedInc = false
     
     func checkState() {
         let distance = settings.introductionAcceptedDate.timeIntervalSince(RELEASE_DATE)
+        print(distance)
+        print(settings.introductionAccepted)
         
         if(!settings.introductionAccepted) {
             self.showIntro.toggle()
@@ -30,48 +33,17 @@ struct ContentView : View {
         }
     }
     
-    var actions: ActionSheet {
-        ActionSheet(title: Text("Escolha tipo de novo bem"),
-                    //message: Text("Escolha tipo de novo bem"),
-                    buttons: [
-                        .default(Text("Ações"), action: { self.showAddStock.toggle() }),
-                        //.default(Text("Fundos"), action: {self.showAlert.toggle() }),
-                        .cancel(Text("Cancelar"))])
-    }
+
    
     var body: some View {
         VStack {
-            // Get main view
-            if(selection == TypeView.home) {
-                Home()
-            }
-            else if(selection == TypeView.overview) {
-                Overview()
-            }
-            else if(selection == TypeView.operations) {
-                Operations()
-            }
-            else if(selection == TypeView.settings) {
-                Settings()
-            }
-         
             // Custom tab bar
-            Divider()
-            HStack(alignment: .center) {
-                TabViewItem(iconName: "house", iconSelected: "house.fill", caption: "Principal", id: TypeView.home, selection: self.$selection)
-                TabViewItem(iconName: "list.bullet", iconSelected: "list.bullet", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
-                Button(action: {self.showAction.toggle()}) {
-                    Image(systemName: "plus.rectangle.fill")
-                        .scaledToFill()
-                        .font(.system(size: 40))
-                }
-                .actionSheet(isPresented: $showAction) {
-                    actions
-                }
-                TabViewItem(iconName: "arrow.up.arrow.down.square", iconSelected: "arrow.up.arrow.down.square.fill", caption: "Operações", id: TypeView.operations, selection: self.$selection)
-                TabViewItem(iconName: "wrench", iconSelected: "wrench.fill", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
+            if sizeClass == .compact {
+                ContentCompact(selectedSheet: $selectedSheet, showAddStock: $showAddStock)
             }
-            .padding(.top, 4)
+            else {
+                ContentRegular(showAddStock: $showAddStock)
+            }
         }
         .accentColor(.mainColor)
         .sheet(isPresented: self.$showIntro) {
@@ -79,9 +51,14 @@ struct ContentView : View {
                 .environmentObject(self.settings)
         }
         .sheet(isPresented: $showAddStock) {
-            AddStock(isPresented: self.$showAddStock)
-                .environmentObject(self.userData)
-                .environmentObject(self.stockStore)
+            if self.selectedSheet == .stock {
+                AddStock(isPresented: self.$showAddStock)
+                    .environmentObject(self.userData)
+                    .environmentObject(self.stockStore)
+            }
+            else if self.selectedSheet == .fixed {
+                AddFixedInc(isPresented: self.$showAddStock)
+            }
         }
         .onAppear(perform: checkState)
     }
@@ -112,6 +89,10 @@ struct TabViewItem : View {
 
 enum TypeView: Int {
     case home = 0, overview, operations, settings
+}
+
+enum AddSheet {
+    case stock, fixed
 }
 
 #if DEBUG

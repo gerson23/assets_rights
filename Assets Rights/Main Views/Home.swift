@@ -18,6 +18,8 @@ struct Home : View {
     @EnvironmentObject var userData: UserData
     @EnvironmentObject var stockStore: StockStore
     
+    @Environment(\.horizontalSizeClass) var sizeClass
+    
     @State var showAddStock = false;
     @State var showAction = false;
     @State var showAlert = false;
@@ -43,22 +45,21 @@ struct Home : View {
     }
     
     var body: some View {
-        VStack {
-            VStack(alignment: .center) {
-                Text("Bens e Direitos")
-                    .font(.custom("Optima-ExtraBlack", size: 40))
-                
-                Picker("", selection: $selection) {
-                    ForEach(GraphType.allCases, id: \.self) { type in
-                        Text(type.rawValue).tag(type)
-                    }
+        VStack(alignment: .center) {
+            Text("Bens e Direitos")
+                .font(.custom("Optima-ExtraBlack", size: 40))
+            
+            Picker("", selection: $selection) {
+                ForEach(GraphType.allCases, id: \.self) { type in
+                    Text(type.rawValue).tag(type)
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.top)
-                .padding(.horizontal)
-
-                StockGraph(self.stockStore.stocks, self.$selection)
             }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.top)
+            .padding(.horizontal)
+
+            StockGraph(self.stockStore.stocks, self.$selection)
+            .navigationBarHidden(sizeClass != .compact)
         }
     }
 }

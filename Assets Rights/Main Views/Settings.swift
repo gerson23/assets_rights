@@ -13,7 +13,7 @@ struct Settings : View {
     @State var notifications = false
     
     var body: some View {
-        NavigationView {
+        //NavigationView {
             // Keeping VStack for now as Form is crashing sibbling views
             //Form {
             /*VStack(alignment: .leading, spacing: 30) {
@@ -43,7 +43,7 @@ struct Settings : View {
             .alert(isPresented: $notifications) {
                 Alert(title: Text("Dados deletados"))
             }
-        }
+     //   }
     }
 }
 
