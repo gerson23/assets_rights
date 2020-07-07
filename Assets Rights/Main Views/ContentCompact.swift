@@ -14,7 +14,6 @@ struct ContentCompact: View {
     @Binding  var selectedSheet: AddSheet
     @Binding var showAddStock: Bool
 
-
     var actions: ActionSheet {
         ActionSheet(title: Text("Escolha tipo de novo bem"),
                     //message: Text("Escolha tipo de novo bem"),
@@ -32,43 +31,57 @@ struct ContentCompact: View {
     }
     
     var body: some View {
-        VStack {
-        // Get main view
-        if(selection == TypeView.home) {
-            Home()
-        }
-        else if(selection == TypeView.overview) {
-            NavigationView {
-                Overview()
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selection) {
+                Home().tabItem {
+                    Label("Principal", systemImage: selection == TypeView.home ? "house.fill" : "house")
+                }.tag(TypeView.home)
+                
+                NavigationView { Overview() }.tabItem {
+                    Label("Resumo", systemImage: "list.bullet")
+                }.tag(TypeView.overview)
+                
+                NavigationView { Operations() }.tabItem {
+                    Label("Operações", systemImage: selection == TypeView.operations ? "arrow.up.arrow.down.square.fill" : "arrow.up.arrow.down.square")
+                }.tag(TypeView.operations)
+                
+                NavigationView { Settings() }.tabItem {
+                    Label("Ajustes", systemImage: selection == TypeView.settings ? "wrench.fill" : "wrench")
+                }.tag(TypeView.settings)
             }
-        }
-        else if(selection == TypeView.operations) {
-            NavigationView {
-                Operations()
-            }
-        }
-        else if(selection == TypeView.settings) {
-            NavigationView {
-                Settings()
-            }
-        }
         
-        Divider()
-        
-        HStack(alignment: .center) {
-            TabViewItem(iconName: "house", iconSelected: "house.fill", caption: "Principal", id: TypeView.home, selection: self.$selection)
-            TabViewItem(iconName: "list.bullet", iconSelected: "list.bullet", caption: "Resumo", id: TypeView.overview, selection: self.$selection)
             Button(action: {self.showAction.toggle()}) {
-                Image(systemName: "plus.rectangle.fill")
+                Image(systemName: "plus.circle.fill")
                     .scaledToFill()
-                    .font(.system(size: 40))
+                    .font(.system(size: 60))
             }
+            .padding(.bottom, 20)
             .actionSheet(isPresented: $showAction) {
                 actions
             }
-            TabViewItem(iconName: "arrow.up.arrow.down.square", iconSelected: "arrow.up.arrow.down.square.fill", caption: "Operações", id: TypeView.operations, selection: self.$selection)
-            TabViewItem(iconName: "wrench", iconSelected: "wrench.fill", caption: "Ajustes", id: TypeView.settings, selection: self.$selection)
         }
+    }
+}
+
+struct TabViewItem : View {
+    var iconName: String
+    var iconSelected: String
+    var caption: String
+    var id: TypeView
+    
+    @Binding var selection: TypeView
+    
+    var body: some View {
+        VStack {
+            Image(systemName: selection == id ? self.iconSelected  : self.iconName)
+                .imageScale(.large)
+                .font(Font.body.weight(selection == id ? .heavy : .light))
+            Text(self.caption)
+                .font(.caption)
+        }
+        .padding(.horizontal)
+        .onTapGesture {
+            self.selection = self.id
         }
     }
 }

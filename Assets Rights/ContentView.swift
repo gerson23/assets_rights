@@ -64,29 +64,6 @@ struct ContentView : View {
     }
 }
 
-struct TabViewItem : View {
-    var iconName: String
-    var iconSelected: String
-    var caption: String
-    var id: TypeView
-    
-    @Binding var selection: TypeView
-    
-    var body: some View {
-        VStack {
-            Image(systemName: selection == id ? self.iconSelected  : self.iconName)
-                .imageScale(.large)
-                .font(Font.body.weight(selection == id ? .heavy : .light))
-            Text(self.caption)
-                .font(.caption)
-        }
-        .padding(.horizontal)
-        .onTapGesture {
-            self.selection = self.id
-        }
-    }
-}
-
 enum TypeView: Int {
     case home = 0, overview, operations, settings
 }
